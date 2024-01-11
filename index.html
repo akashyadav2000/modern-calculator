@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculator</title>
+    <link rel="stylesheet" href="calculator.css" />
+  </head>
+  <body>
+    <div id="calculator">
+      <div id="display">0</div>
+      <div id="buttons">
+        <button class="reset double" onclick="clearCalculator()">C</button>
+        <button class="equal operator">=</button>
+
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button class="operator">/</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button class="operator">*</button>
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button class="operator">-</button>
+        <button>00</button>
+        <button>0</button>
+        <button>.</button>
+        <button class="operator">+</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const display = document.getElementById("display");
+        const buttons = document.getElementById("buttons");
+
+        let currentInput = "";
+        let currentOperator = "";
+        let prevInput = "";
+
+        buttons.addEventListener("click", function (event) {
+          if (event.target.tagName === "BUTTON") {
+            const buttonText = event.target.innerText;
+
+            if (!isNaN(buttonText) || buttonText === ".") {
+              currentInput += buttonText;
+            } else if (buttonText === "C") {
+              clearCalculator();
+            } else if (buttonText === "=") {
+              calculateResult();
+            } else {
+              handleOperator(buttonText);
+            }
+
+            updateDisplay();
+          }
+        });
+
+        function updateDisplay() {
+          let displayText = "";
+
+          if (prevInput !== "") {
+            displayText += prevInput;
+            if (currentOperator !== "") {
+              displayText += " " + currentOperator;
+            }
+          }
+
+          if (currentInput !== "") {
+            displayText += " " + currentInput;
+          }
+
+          display.innerText = displayText.trim() || "0";
+        }
+
+        function clearCalculator() {
+          currentInput = "";
+          currentOperator = "";
+          prevInput = "";
+          updateDisplay();
+        }
+
+        function handleOperator(operator) {
+          if (currentInput === "") return;
+
+          if (prevInput !== "") {
+            calculateResult();
+          }
+
+          currentOperator = operator;
+          prevInput = currentInput;
+          currentInput = "";
+        }
+
+        function calculateResult() {
+          let result;
+
+          const num1 = parseFloat(prevInput);
+          const num2 = parseFloat(currentInput);
+
+          if (isNaN(num1) || isNaN(num2)) return;
+
+          switch (currentOperator) {
+            case "+":
+              result = num1 + num2;
+              break;
+            case "-":
+              result = num1 - num2;
+              break;
+            case "*":
+              result = num1 * num2;
+              break;
+            case "/":
+              result = num1 / num2;
+              break;
+            default:
+              return;
+          }
+
+          currentInput = result.toString();
+          currentOperator = "";
+          prevInput = "";
+        }
+      });
+    </script>
+  </body>
+</html>
